@@ -1,7 +1,8 @@
 # Byte-compiled / optimized / DLL files
-__pycache__/
+.__pycache__/
 *.py[cod]
 *$py.class
+.test/__pycache__/
 
 # C extensions
 *.so
@@ -136,3 +137,7 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+__pycache__/constants.cpython-39.pyc
+__pycache__/constants.cpython-39.pyc
+__pycache__/helper.cpython-39.pyc
+test/__pycache__/test_FunctionBuilder.cpython-39-pytest-6.2.2.pyc
