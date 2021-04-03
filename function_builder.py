@@ -1,33 +1,20 @@
 import numpy
 from extended_int import int_inf
+from FUNCTOWAV import constants as c
 from math import sin
-from song_builder import heaviside
+from simple_math import heaviside
 from typing import Callable
-
-keyToNum = {
-    'c': 0,
-    'c#': 1,
-    'd': 2,
-    'd#': 3,
-    'e': 4,
-    'f': 5,
-    'f#': 6,
-    'g': 7,
-    'g#': 8,
-    'a': 9,
-    'a#': 10,
-    'b': 11
-}
 
 class SongBuilder:
     length: int
+    numToFreq: Callable[[int], float]
     sampleRate: int
     song: []
 
-    def __init__(self):
-        self.song = []
-        self.sampleRate = 48000
+    def __init__(self, sampleRate: int = 48000):
         self.length = 0
+        self.numToFreq = lambda num: round((2**((num-49)/12)*440),3)
+        self.song = []
 
     def appendToSong(self, key: str, startTime: int, duration: int = None, endTime: int = int_inf):
         if (duration == None) and (endTime == int_inf):
@@ -43,20 +30,18 @@ class SongBuilder:
                 raise ValueError("the note duration + note start timing must match end timing")
 
         part = {
-            "freq": self.numToFreq(self.keyToNum(key)),
-            "startTime": startTime,
-            "endTime": endTime
+            c.FREQUENCY: self.numToFreq(self.keyToNum(key)),
+            c.START_TIME: startTime,
+            c.END_TIME: endTime
         }
+
         self.song.append(part)
     
     def freqToFunc(self, part: dict) -> Callable[[int], float]:
-        freq = part["freq"]
-        sTime = part["startTime"]
-        eTime = part["eTime"]
-        return lambda x: sin(freq * x) *
-
-    def numToFreq(self, num: int) -> float:
-        return round((2**((num-49)/12)*440),3)
+        freq = part[c.FREQUENCY]
+        sTime = part[c.sTime]
+        eTime = part[c.END_TIME]
+        return lambda x: sin(freq * x)
 
     def keyToNum(self, key: str) -> int:
         if len(key) == 3:
