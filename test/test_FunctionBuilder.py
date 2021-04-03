@@ -1,5 +1,5 @@
 import pytest
-from song_builder.function_builder import SongBuilder
+from FuncToWav.song_builder import SongBuilder
 
 @pytest.mark.parametrize("input,expected",[
     ["a4", 49],

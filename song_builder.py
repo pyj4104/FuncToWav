@@ -1,8 +1,8 @@
 import numpy
 from extended_int import int_inf
-from FUNCTOWAV import constants as c
+from FuncToWav import constants as c
 from math import sin
-from simple_math import heaviside
+from FuncToWav.helper import heaviside
 from typing import Callable
 
 class SongBuilder:
@@ -60,10 +60,10 @@ class SongBuilder:
 
     def __keyToNum__(self, scale: str, octave: str) -> int:
         print(scale)
-        if scale.lower() not in keyToNum:
+        if scale.lower() not in c.KEY_TO_NUM:
             raise ValueError("The letter code is not one of the scale")
         
-        num = int(octave)*12+keyToNum[scale.lower()]-8
+        num = int(octave)*12+c.KEY_TO_NUM[scale.lower()]-8
 
         if num < 1 or num > 88:
             raise ValueError("Unsupported tone")
