@@ -1,47 +1,32 @@
 import numpy
 from extended_int import int_inf
+from functools import reduce 
 from FuncToWav import constants as c
 from math import sin
-from FuncToWav.helper import heaviside
+from FuncToWav.helper import heaviside, combineFuncs
 from typing import Callable
 
 class SongBuilder:
     length: int
-    numToFreq: Callable[[int], float]
+    numToFreq: Callable[[float], float]
     sampleRate: int
-    song: []
+    notes: []
 
     def __init__(self, sampleRate: int = 48000):
         self.length = 0
         self.numToFreq = lambda num: round((2**((num-49)/12)*440),3)
-        self.song = []
+        self.notes = []
 
-    def appendToSong(self, key: str, startTime: int, duration: int = None, endTime: int = int_inf):
-        if (duration == None) and (endTime == int_inf):
-            endTime = int_inf
-        elif (duration == None) and (endTime != int_inf):
-            endTime = endTime
-            self.length = self.length if self.length >= starTime+duration else starTime+duration
-        elif (duration != None) and (endTime == int_inf):
-            endTime = startTime+duration
-            self.length = self.length if self.length >= starTime+duration else starTime+duration
-        else:
-            if startTime+duration != endTime:
-                raise ValueError("the note duration + note start timing must match end timing")
+    def __keyToNum__(self, scale: str, octave: str) -> int:
+        if scale.lower() not in c.KEY_TO_NUM:
+            raise ValueError("The letter code is not one of the scale")
+        
+        num = int(octave)*12+c.KEY_TO_NUM[scale.lower()]-8
 
-        part = {
-            c.FREQUENCY: self.numToFreq(self.keyToNum(key)),
-            c.START_TIME: startTime,
-            c.END_TIME: endTime
-        }
+        if num < 1 or num > 88:
+            raise ValueError("Unsupported tone")
 
-        self.song.append(part)
-    
-    def freqToFunc(self, part: dict) -> Callable[[int], float]:
-        freq = part[c.FREQUENCY]
-        sTime = part[c.sTime]
-        eTime = part[c.END_TIME]
-        return lambda x: sin(freq * x)
+        return num
 
     def keyToNum(self, key: str) -> int:
         if len(key) == 3:
@@ -58,14 +43,32 @@ class SongBuilder:
 
         return self.__keyToNum__(scale, octave)
 
-    def __keyToNum__(self, scale: str, octave: str) -> int:
-        print(scale)
-        if scale.lower() not in c.KEY_TO_NUM:
-            raise ValueError("The letter code is not one of the scale")
-        
-        num = int(octave)*12+c.KEY_TO_NUM[scale.lower()]-8
+    def appendToSong(self, key: str, startTime: int, duration: int = None, endTime: int = int_inf):
+        if (duration == None) and (endTime == int_inf):
+            endTime = int_inf
+        elif (duration == None) and (endTime != int_inf):
+            endTime = endTime
+            self.length = self.length if self.length >= startTime+duration else startTime+duration
+        elif (duration != None) and (endTime == int_inf):
+            endTime = startTime+duration
+            self.length = self.length if self.length >= startTime+duration else startTime+duration
+        else:
+            if startTime+duration != endTime:
+                raise ValueError("the note duration + note start timing must match end timing")
 
-        if num < 1 or num > 88:
-            raise ValueError("Unsupported tone")
+        part = {
+            c.FREQUENCY: self.numToFreq(self.keyToNum(key)),
+            c.START_TIME: startTime,
+            c.END_TIME: endTime
+        }
 
-        return num
+        self.notes.append(part)
+
+    def freqToFunc(self, part: dict) -> Callable[[float], float]:
+        freq = part[c.FREQUENCY]
+        sTime = part[c.START_TIME]
+        eTime = part[c.END_TIME]
+        return lambda x: sin(freq * x) * heaviside(x, sTime=sTime, eTime=eTime)
+
+    def buildSong(self) -> Callable[[float], float]:
+        return reduce(combineFuncs, self.notes)

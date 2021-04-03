@@ -19,3 +19,19 @@ def test_keyToNum(input, expected):
 def test_numToFreq(input, expected):
     fBuilder = SongBuilder()
     assert fBuilder.numToFreq(input) == expected
+
+@pytest.mark.parametrize("scale,octave,expected", [
+    ['a', '4', 49],
+    ['a#', '4', 50],
+    ['ab', '4', 48],
+    ['g#', '4', 48]
+])
+def test___keyToNum__(scale, octave, expected):
+    fBuilder = SongBuilder()
+    assert fBuilder.__keyToNum__(scale, octave) == expected
+
+def freqToFunc():
+    pass
+
+def buildSong():
+    pass
