@@ -28,7 +28,7 @@ def test_numToFreq(input, expected):
 ])
 def test___keyToNum__(scale, octave, expected):
     fBuilder = SongBuilder()
-    assert fBuilder.__keyToNum__(scale, octave) == expected
+    assert fBuilder._keyToNum(scale, octave) == expected
 
 def freqToFunc():
     pass

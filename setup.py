@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="FuncToWav", # Replace with your own username
-    version="0.0.1",
+    version="0.0.2",
     author="YeounJun Park",
     author_email="pyj4104@hotmail.com",
     description="Given function, outputs wav file.",
@@ -20,7 +20,10 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    package_dir={"": "src"},
-    packages=setuptools.find_packages(where="src"),
+    # package_dir={"": "src"},
+    # packages=setuptools.find_packages(where="src"),
+    packages=[
+        "FuncToWav",
+    ],
     python_requires=">=3.8",
 )

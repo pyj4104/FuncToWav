@@ -8,16 +8,17 @@ from typing import Callable
 
 class SongBuilder:
     length: int
-    numToFreq: Callable[[float], float]
     sampleRate: int
     notes: []
 
     def __init__(self, sampleRate: int = 48000):
         self.length = 0
-        self.numToFreq = lambda num: round((2**((num-49)/12)*440),3)
         self.notes = []
+    
+    def numToFreq(self, x: int):
+        return round((2**((x-49)/12)*440),3)
 
-    def __keyToNum__(self, scale: str, octave: str) -> int:
+    def _keyToNum(self, scale: str, octave: str) -> int:
         if scale.lower() not in c.KEY_TO_NUM:
             raise ValueError("The letter code is not one of the scale")
         
@@ -41,7 +42,7 @@ class SongBuilder:
         else:
             raise ValueError("It's not possible to convert the input to key number")
 
-        return self.__keyToNum__(scale, octave)
+        return self._keyToNum(scale, octave)
 
     def appendToSong(self, key: str, startTime: int, duration: int = None, endTime: int = int_inf):
         if (duration == None) and (endTime == int_inf):
