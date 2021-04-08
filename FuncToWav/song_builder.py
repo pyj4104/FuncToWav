@@ -2,7 +2,7 @@ import numpy
 from extended_int import int_inf
 from functools import reduce
 from FuncToWav import constants as c
-from math import sin
+from math import sin, pi
 from FuncToWav.helper import heaviside, combineFuncs
 from typing import Callable
 
@@ -67,7 +67,7 @@ class SongBuilder:
         freq = part[c.FREQUENCY]
         sTime = part[c.START_TIME]
         eTime = part[c.END_TIME]
-        return lambda x: sin(freq * x) * heaviside(x, sTime=sTime, eTime=eTime)
+        return lambda x: sin(2*pi*freq * x) * heaviside(x, sTime=sTime, eTime=eTime)
 
     def buildSong(self) -> Callable[[float], float]:
         funcs = list(map(self.freqToFunc, self.notes))
