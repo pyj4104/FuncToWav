@@ -8,10 +8,9 @@ from typing import Callable
 
 class SongBuilder:
     length: int
-    sampleRate: int
     notes: []
 
-    def __init__(self, sampleRate: int = 48000):
+    def __init__(self):
         self.length = 0
         self.notes = []
     
