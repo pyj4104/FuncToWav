@@ -17,6 +17,6 @@ def test_writeSong():
     sb.appendToSong("c4", 3, endTime=4)
     song = sb.buildSong()
     print(sb.length)
-    wavFileGen = WriteWav(10, 'testSong')
+    wavFileGen = WriteWav(sb.length, 'testSong')
     wavFileGen.createFile()
     wavFileGen.appendData(song)

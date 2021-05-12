@@ -10,7 +10,7 @@ class WriteWav:
     numChannels: int
     bps: int
 
-    def __init__(self, duration: float, fileName: str = 'output', sampleRate: int = 48000, bps: int = 16, numChannels: int = 1):
+    def __init__(self, duration: float, fileName: str = 'output', sampleRate: int = 48000, bps: int = 32, numChannels: int = 1):
         self.sampleRate = sampleRate
         self.numChannels = numChannels
         self.bps = bps
@@ -53,7 +53,7 @@ class WriteWav:
                 t = 0
                 step = 1/self.sampleRate
                 while t <= self.duration:
-                    file.write(struct.pack('<f', song(t)*(2**(self.bps-1))))
+                    file.write(struct.pack('<f', song(t)))
                     t += step
         except Exception as e:
             print(e)
